@@ -1,3 +1,6 @@
+<img width="1098" height="465" alt="image" src="https://github.com/user-attachments/assets/6694e827-4538-4b97-9246-c5549db2dab1" />
+
+
 # lens-studio-spectacles-ar
 
 > An AI agent skill for building production AR experiences on Snap Spectacles in Lens Studio.
