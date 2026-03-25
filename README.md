@@ -5,6 +5,10 @@
 
 > An AI agent skill for building production AR experiences on Snap Spectacles in Lens Studio.
 
+```
+npx skills add wbohanw/lens-studio-skills
+```
+
 This skill encodes hard-won patterns from building a real Spectacles app end-to-end: AI-driven 3D animal spawning, chatbot integration over HTTP, TTS narration with typewriter subtitles, voice command input, and live scene editing via MCP.
 
 It is structured for [skills.sh](https://skills.sh) — a standard format any MCP-compatible AI agent can load and use.
@@ -60,30 +64,6 @@ eval/
 | Asset Library + `.lspkg` import paths | `asset-library.md` |
 | `ObjectPrefab.instantiateAsync()` | `local-asset-spawning.md` |
 | Full MCP tool reference for Lens Studio 5.15+ | `lens-studio-mcp.md` |
-
----
-
-## Installation
-
-### Option A — skills.sh (recommended)
-
-```bash
-skills install lens-studio-spectacles-ar
-```
-
-### Option B — Clone directly
-
-```bash
-git clone https://github.com/your-username/lens-studio-skills ~/.agents/skills/lens-studio-spectacles-ar
-```
-
-### Option C — Manual copy
-
-Copy the entire repo into your agent skills directory:
-
-```bash
-cp -r lens-studio-skills ~/.agents/skills/lens-studio-spectacles-ar
-```
 
 ---
 
