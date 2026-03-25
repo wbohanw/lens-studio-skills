@@ -1,0 +1,130 @@
+{
+  "skill_name": "lens-studio-spectacles-ar",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "My 3D animal always follows my head when I move on Spectacles. How do I make it stay in one place?",
+      "expected_output": "Explanation that the object is parented to the Camera SceneObject, causing setWorldPosition to be camera-relative. Fix: reparent the object to the scene root using setParent(scene.getRootObject(0)). Call setWorldPosition after setParent.",
+      "expectations": [
+        "Identifies that the object is a Camera child as the root cause",
+        "Recommends reparenting to scene root",
+        "Notes setWorldPosition should be called after setParent",
+        "References or explains world-space vs camera-local coordinate distinction"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I call spawn('fox') and the logs say it's enabled, but I can't see the fox on screen. What's happening?",
+      "expected_output": "Two possible causes: (1) hideAll() recursed into inner mesh nodes and disabled them; re-enabling the top-level Fox node doesn't restore the inner mesh. Fix: only register direct children in scanChildren, never recurse. (2) Parent enabled-state cascade — if the pool root or Fox was disabled at the inner-node level, re-enabling the parent alone won't restore explicitly-disabled children.",
+      "expectations": [
+        "Identifies the recursive scanChildren registration trap",
+        "Explains that hideAll disabling inner nodes is the core problem",
+        "Recommends only registering direct children of the pool root",
+        "Mentions parent-enabled cascade as a secondary cause",
+        "Provides corrected scanChildren code or describes the fix"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "My Botpress bot receives messages from Spectacles (I can see the message IDs in logs) but never sends a reply. What could be wrong?",
+      "expected_output": "The ADK conversation handler is likely using channel: '*' instead of channel: 'chat.channel'. The wildcard does not match messages sent via the Botpress Chat REST API. Fix: change to channel: 'chat.channel' and redeploy with adk deploy. Diagnostic: add logging to the poll loop and check if only the user's own message appears in the message list.",
+      "expectations": [
+        "Identifies channel: '*' vs channel: 'chat.channel' as the cause",
+        "Recommends the exact fix: channel: 'chat.channel'",
+        "Mentions adk deploy to apply the fix",
+        "Describes how to diagnose via poll logging (only 1 message visible)"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "ASR keeps giving me Error 3 on my Spectacles. What does it mean and how do I fix it?",
+      "expected_output": "Error 3 means 'no speech detected' — the silence timeout fired before recognising any speech. Two most common causes: (1) microphone permission not granted in Spectacles settings, (2) silenceUntilTerminationMs is too short. Also note that ASR always fails in the Lens Studio desktop simulator — test on physical hardware only.",
+      "expectations": [
+        "Correctly identifies Error 3 as 'no speech detected'",
+        "Mentions mic permission as the primary on-device cause",
+        "Mentions silence timeout tuning (increase silenceUntilTerminationMs)",
+        "Notes simulator does not support ASR"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "How do I import FBX animal models into Lens Studio and spawn them at runtime?",
+      "expected_output": "Copy .fbx files directly into the Assets/ folder on disk — Lens Studio auto-imports them. Place each model as a disabled child of a pool SceneObject at the scene root (not under Camera). At runtime, toggle child.enabled = true/false. Only register direct children in the spawner registry — never recurse. Apply a scale multiplier (typically ~20) because FBX files exported in metres are at 1/100 scale in Lens Studio.",
+      "expectations": [
+        "Describes the disk copy + auto-import workflow",
+        "Explains the visibility pool pattern (pre-placed disabled objects)",
+        "Warns about Camera parenting (pool root must be at scene root)",
+        "Mentions scale correction for FBX unit mismatch",
+        "Notes direct-children-only registration"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "How do I connect my Spectacles lens to an external chatbot API when there are no WebSockets?",
+      "expected_output": "Use HTTP polling via RemoteServiceModule/InternetModule. Pattern: POST message → record afterTime from the response's createdAt field → poll GET /messages with exponential backoff → filter results where userId !== myUserId AND createdAt > afterTime. Use ISO string comparison for timestamp filtering. Provide the full DelayedCallbackEvent polling loop pattern.",
+      "expectations": [
+        "Confirms there is no WebSocket support",
+        "Describes the POST then GET polling pattern",
+        "Mentions using server-returned createdAt as afterTime (not client timestamp)",
+        "Explains the userId and createdAt filter conditions",
+        "Mentions exponential backoff with DelayedCallbackEvent"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "How do I add a button to my Spectacles UI that responds to hand pinch? Which component should I use?",
+      "expected_output": "Use RoundButton or BaseButton from SpectaclesUIKit (SUIK) — the current package. Do NOT use PinchButton from SpectaclesInteractionKit (SIK) which is deprecated. Import via 'SpectaclesUIKit.lspkg/Scripts/Components/Button/RoundButton'. Bind to onTriggerUp (not onButtonPinched which is the legacy API). For scene-authored buttons, wire in OnStartEvent; for code-created buttons, call initialize() first then wire onTriggerUp.",
+      "expectations": [
+        "Recommends SUIK RoundButton/BaseButton, not SIK PinchButton",
+        "Uses onTriggerUp, not onButtonPinched",
+        "Provides the correct .lspkg import path",
+        "Notes that wiring must happen in OnStartEvent (not onAwake) for scene-authored buttons",
+        "Mentions initialize() for code-created buttons"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "How do I detect when a user pinches their hand in Lens Studio without using a button?",
+      "expected_output": "Use TrackedHand via SIK.HandInputData.getHand('right'/'left'). Call isPinching() in an UpdateEvent handler. To get a one-shot event (not continuous), add a wasPinching debounce flag: fire only when isPinching() is true AND wasPinching is false. Set wasPinching = true on pinch start, false on pinch end.",
+      "expectations": [
+        "Uses SIK.HandInputData.getHand() to access TrackedHand",
+        "Shows isPinching() usage in UpdateEvent",
+        "Includes the wasPinching debounce pattern",
+        "Distinguishes TrackedHand (raw state) from HandInteractor (interaction layer)"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "How do I create a floating panel / card UI in Spectacles that always faces the user?",
+      "expected_output": "Use the SUIK Frame component (not the deprecated SIK ContainerFrame). Add Component → SpectaclesUIKit → Frame. Enable Billboard on the Frame to keep it facing the user. Wire the built-in closeButton and followButton via onTriggerUp. Use renderOrder to control z-stacking between multiple panels.",
+      "expectations": [
+        "Recommends SUIK Frame, not deprecated ContainerFrame",
+        "Mentions enabling Billboard for user-facing orientation",
+        "Shows how to wire closeButton and followButton",
+        "Mentions renderOrder for panel layering"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "How do I install SpectaclesInteractionKit and import its components in TypeScript?",
+      "expected_output": "Open the Asset Library (toolbar button or Window → Asset Library). Search for 'Spectacles Interaction Kit' under the Spectacles category and click Install. After installing, import via the .lspkg path: import { SIK } from 'SpectaclesInteractionKit.lspkg/SIK'. Built-in modules like InternetModule and TTS are added via the Resources panel (+), not the Asset Library.",
+      "expectations": [
+        "Describes opening the Asset Library",
+        "Gives the correct .lspkg import path format",
+        "Distinguishes Asset Library (SIK/SUIK) from Resources panel (built-in modules)",
+        "Mentions the Spectacles category in the library"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "How do I spawn multiple independent instances of the same animal prefab in Lens Studio at runtime?",
+      "expected_output": "Use ObjectPrefab.instantiateAsync() (or instantiate() for small assets). Declare the prefab as an @input field in the Inspector — there is no findAssetByName() at runtime. Pass a parent SceneObject or null (scene root) to instantiate(). Keep a registry array/map of live instances to destroy them later. Use instantiateAsync for larger assets to avoid frame hitches.",
+      "expectations": [
+        "Uses ObjectPrefab.instantiate() or instantiateAsync()",
+        "Declares prefab via @input (not findAssetByName)",
+        "Shows how to store instances for later cleanup",
+        "Recommends instantiateAsync for large assets"
+      ]
+    }
+  ]
+}
