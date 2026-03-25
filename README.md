@@ -9,6 +9,8 @@
 npx skills add wbohanw/lens-studio-skills
 ```
 
+[View on skills.sh](https://skills.sh/rolandsmeenk/lensstudioagents/lens-studio-scripting)
+
 This skill encodes hard-won patterns from building a real Spectacles app end-to-end: AI-driven 3D animal spawning, chatbot integration over HTTP, TTS narration with typewriter subtitles, voice command input, and live scene editing via MCP.
 
 It is structured for [skills.sh](https://skills.sh) — a standard format any MCP-compatible AI agent can load and use.
