@@ -9,7 +9,7 @@
 npx skills add wbohanw/lens-studio-skills
 ```
 
-[View on skills.sh](https://skills.sh/rolandsmeenk/lensstudioagents/lens-studio-scripting)
+
 
 This skill encodes hard-won patterns from building a real Spectacles app end-to-end: AI-driven 3D animal spawning, chatbot integration over HTTP, TTS narration with typewriter subtitles, voice command input, and live scene editing via MCP.
 
@@ -103,7 +103,7 @@ See `references/lens-studio-mcp.md` for the complete tool reference.
 
 This skill assumes basic Lens Studio TypeScript knowledge. For the component system, decorators, lifecycle events, and `@input` wiring, see:
 
-**[lens-studio-scripting](https://skills.sh/skills/lens-studio-scripting)** — BaseScriptComponent, `onAwake`, `UpdateEvent`, `@component`, `@input`, `@hint`, `getComponent`, cross-script imports.
+**[lens-studio-scripting](https://skills.sh/rolandsmeenk/lensstudioagents/lens-studio-scripting)** — BaseScriptComponent, `onAwake`, `UpdateEvent`, `@component`, `@input`, `@hint`, `getComponent`, cross-script imports.
 
 ---
 
